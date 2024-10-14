@@ -173,10 +173,10 @@ def randomize_items(
         # Apply filters immediately to the pools
         if sentry_filter_states:
             stratagems_pools['sentries'] = filter_pool(stratagems_pools['sentries'], sentry_filter_states)
-        print("Sentries:", stratagems_pools['sentries']) # Debug Message
+        # print("Sentries:", stratagems_pools['sentries']) # Debug Message
         if vehicle_filter_states:
             stratagems_pools['vehicles'] = filter_pool(stratagems_pools['vehicles'], vehicle_filter_states)
-        print("Vehicles:", stratagems_pools['vehicles']) # Debug Message
+        # print("Vehicles:", stratagems_pools['vehicles']) # Debug Message
 
         # Fulfill guaranteed stratagems based on user input
         if g_support_var and 'support weapon' not in fulfilled_tags:
