@@ -13,7 +13,7 @@ from Libraries.Stratagems.Vehicles import vehicles
 def randomize_items(
         primary_var, secondary_var, grenade_var, armor_var, booster_var,
         stratagem_var, one_support_var, g_support_var, one_backpack_var, g_backpack_var, 
-        g_sentry_var, g_tank_var, g_explosive_var, g_vehicle_var,
+        g_sentry_var, g_tank_var, g_explosive_var, one_vehicle_var, g_vehicle_var,
         primary_filter_states, secondary_filter_states, grenade_filter_states, armor_filter_states,
         booster_filter_states, sentry_filter_states, vehicle_filter_states
         ):
@@ -40,6 +40,7 @@ def randomize_items(
                 fulfilled_tags.extend(item.tags)
                 limit_support()
                 limit_backpack()
+                limit_vehicle()
                 return item
         else:
             choices = [item for item in pool if item not in selected_stratagems]
@@ -49,6 +50,7 @@ def randomize_items(
                 fulfilled_tags.extend(item.tags)
                 limit_support()
                 limit_backpack()
+                limit_vehicle()
                 return item
         return None
 
@@ -65,6 +67,13 @@ def randomize_items(
             # Remove items with the 'backpack' tag from future choices
             for pool in stratagems_pools.values():
                 pool[:] = [item for item in pool if 'backpack' not in item.tags or item in selected_stratagems]
+
+    # Limit checks for vehicle
+    def limit_vehicle():
+        if one_vehicle_var and any(item in stratagem_choices for item in vehicles):
+            # Remove all items from the vehicles pool from future choices
+            for pool in stratagems_pools.values():
+                pool[:] = [item for item in pool if item not in vehicles]
 
     # Check each checkbox and randomize an item if the checkbox is active
     if primary_var:
@@ -110,17 +119,36 @@ def randomize_items(
             else:
                 print("No available grenades after filtering.")  # Debugging line
         else:
-            grenade_choice = random.choice(grenades)
+            grenade_choice = random.choice(grenade_pool)
             loadout['Grenade'] = grenade_choice
             fulfilled_tags.extend(grenade_choice.tags)
 
     if armor_var:
-        armor_choice = random.choice(armors)
-        loadout['Armor'] = armor_choice
-        fulfilled_tags.extend(armor_choice.tags)
+        armor_pool = armors [:]
+        if armor_filter_states:
+            filtered_armors = filter_pool(armor_pool, armor_filter_states)
+            if filtered_armors:
+                armor_choice=random.choice(filtered_armors)
+                loadout['Armor'] = armor_choice
+                fulfilled_tags.extend(armor_choice.tags)
+            else:
+                print("No available armors after filtering.")  # Debugging line
+        else:
+            armor_choice = random.choice(armor_pool)
+            loadout['Armor'] = armor_choice
+            fulfilled_tags.extend(armor_choice.tags)
 
     if booster_var:
-        booster_choice = random.choice(boosters)
+        booster_pool = boosters [:]
+        if booster_filter_states:
+            filtered_boosters = filter_pool(booster_pool, booster_filter_states)
+            if filtered_boosters:
+                booster_choice = random.choice(filtered_boosters)
+                loadout['Booster'] = booster_choice
+                fulfilled_tags.extend(booster_choice.tags)
+            else:
+                print("No available boosters after filtering.")  # Debugging line
+        booster_choice = random.choice(booster_pool)
         loadout['Booster'] = booster_choice
         fulfilled_tags.extend(booster_choice.tags)
 
@@ -142,35 +170,43 @@ def randomize_items(
             'vehicles': vehicles[:]
         }
 
+        # Apply filters immediately to the pools
+        if sentry_filter_states:
+            stratagems_pools['sentries'] = filter_pool(stratagems_pools['sentries'], sentry_filter_states)
+        print("Sentries:", stratagems_pools['sentries']) # Debug Message
+        if vehicle_filter_states:
+            stratagems_pools['vehicles'] = filter_pool(stratagems_pools['vehicles'], vehicle_filter_states)
+        print("Vehicles:", stratagems_pools['vehicles']) # Debug Message
+
         # Fulfill guaranteed stratagems based on user input
         if g_support_var and 'support weapon' not in fulfilled_tags:
-            support_choice = select_stratagem(supports, tag='support weapon')
+            support_choice = select_stratagem(stratagems_pools['supports'], tag='support weapon')
             if support_choice:
                 stratagem_choices.append(support_choice)
 
         if g_backpack_var and 'backpack' not in fulfilled_tags:
-            backpack_choice = select_stratagem(supports, tag='backpack')
+            backpack_choice = select_stratagem(stratagems_pools['supports'], tag='backpack')
             if backpack_choice:
                 stratagem_choices.append(backpack_choice)
 
         if g_explosive_var and 'explosive' not in fulfilled_tags:
-            explosive_choice = select_stratagem(eagles + orbitals + supports + vehicles, tag='explosive')
+            explosive_choice = select_stratagem(stratagems_pools['eagles'] + stratagems_pools['orbitals'] + stratagems_pools['supports'] + stratagems_pools['vehicles'], tag='explosive')
             if explosive_choice:
                 stratagem_choices.append(explosive_choice)
 
         if g_tank_var and 'anti-tank' not in fulfilled_tags:
-            tank_choice = select_stratagem(eagles + orbitals + supports + vehicles, tag='anti-tank')
+            tank_choice = select_stratagem(stratagems_pools['eagles'] + stratagems_pools['orbitals'] + stratagems_pools['supports'] + stratagems_pools['vehicles'], tag='anti-tank')
             if tank_choice:
                 stratagem_choices.append(tank_choice)
 
         # For Sentries and Vehicles, select any item from their class
         if g_sentry_var:
-            sentry_choice = select_stratagem(sentries)
+            sentry_choice = select_stratagem(stratagems_pools['sentries'])
             if sentry_choice:
                 stratagem_choices.append(sentry_choice)
 
         if g_vehicle_var:
-            vehicle_choice = select_stratagem(vehicles)
+            vehicle_choice = select_stratagem(stratagems_pools['vehicles'])
             if vehicle_choice:
                 stratagem_choices.append(vehicle_choice)
 
@@ -187,6 +223,7 @@ def randomize_items(
                 fulfilled_tags.extend(random_choice.tags)
                 limit_support()  # Check support limit as well
                 limit_backpack()  # Check backpack limit as well
+                limit_vehicle()  # Check vehicle limit as well
 
         # Add stratagems to loadout
         loadout['Stratagems'] = stratagem_choices[:4]  # Ensure exactly 4

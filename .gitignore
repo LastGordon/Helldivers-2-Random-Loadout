@@ -17,4 +17,7 @@ sandbox.py
 *.dll
 *.so
 *.out
+
+*.spec
+build/
 dist/

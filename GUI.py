@@ -63,6 +63,7 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.g_sentry_var = ctk.BooleanVar(value=False)
         self.g_tank_var = ctk.BooleanVar(value=False)
         self.g_explosive_var = ctk.BooleanVar(value=False)
+        self.one_vehicle_var = ctk.BooleanVar(value=False)
         self.g_vehicle_var = ctk.BooleanVar(value=False)
 
         # Configure Grid Layout: 2 rows, 1 columns
@@ -128,11 +129,13 @@ class LoadoutRandomizerApp(ctk.CTk):
 
         # Second column of Stratagem options (indented one checkbox width further)
         self.sentry_check = ctk.CTkCheckBox(self.randomizer_frame, text="Guarantee Sentry", state="disabled", variable=self.g_sentry_var)
-        self.sentry_check.grid(row=2, column=3, sticky="w", padx=0)
+        self.sentry_check.grid(row=1, column=3, sticky="w", padx=0)
         self.anti_tank_check = ctk.CTkCheckBox(self.randomizer_frame, text="Guarantee Anti-Tank", state="disabled", variable=self.g_tank_var)
-        self.anti_tank_check.grid(row=3, column=3, sticky="w", padx=0)
+        self.anti_tank_check.grid(row=2, column=3, sticky="w", padx=0)
         self.explosive_check = ctk.CTkCheckBox(self.randomizer_frame, text="Guarantee Explosive", state="disabled", variable=self.g_explosive_var)
-        self.explosive_check.grid(row=4, column=3, sticky="w", padx=0)
+        self.explosive_check.grid(row=3, column=3, sticky="w", padx=0)
+        self.limit_vehicle_check = ctk.CTkCheckBox(self.randomizer_frame, text="Limit to One Vehicle", state="disabled",variable=self.one_vehicle_var,)
+        self.limit_vehicle_check.grid(row=4, column=3, sticky="w", padx=0)
         self.vehicle_check = ctk.CTkCheckBox(self.randomizer_frame, text="Guarantee Vehicle", state="disabled", variable=self.g_vehicle_var)
         self.vehicle_check.grid(row=5, column=3, sticky="w", padx=0)
 
@@ -278,6 +281,7 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.sentry_check.configure(state=state)
         self.anti_tank_check.configure(state=state)
         self.explosive_check.configure(state=state)
+        self.limit_vehicle_check.configure(state=state)
         self.vehicle_check.configure(state=state)
         self.sentry_filter_button.configure(state=state)
         self.vehicle_filter_button.configure(state=state)
@@ -290,6 +294,7 @@ class LoadoutRandomizerApp(ctk.CTk):
             self.sentry_check.deselect()
             self.anti_tank_check.deselect()
             self.explosive_check.deselect()
+            self.limit_vehicle_check.deselect()
             self.vehicle_check.deselect()
             print("===================")
         else:
@@ -330,6 +335,7 @@ class LoadoutRandomizerApp(ctk.CTk):
             g_sentry_var=self.g_sentry_var.get(),
             g_tank_var=self.g_tank_var.get(),
             g_explosive_var=self.g_explosive_var.get(),
+            one_vehicle_var=self.one_vehicle_var.get(),
             g_vehicle_var=self.g_vehicle_var.get(),
             primary_filter_states=self.primary_filter_states,
             secondary_filter_states=self.secondary_filter_states,
