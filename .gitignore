@@ -9,3 +9,11 @@ env/
 
 # Ignore sandbox file
 sandbox.py
+
+# Ignore compiled files
+*.pyc
+*.pyo
+*.exe
+*.dll
+*.so
+*.out
