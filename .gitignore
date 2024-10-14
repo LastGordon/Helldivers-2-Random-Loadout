@@ -6,3 +6,6 @@ __pycache__/
 .venv/
 venv/
 env/
+
+# Ignore sandbox file
+sandbox.py
