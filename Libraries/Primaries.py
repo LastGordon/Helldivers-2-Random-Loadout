@@ -23,7 +23,6 @@ primaries = [
 
     Primary("Exploding Crossbow", "Explosive", True, ["explosive", "Democratic Detonation"]),
     Primary("Eruptor", "Explosive", False, ["explosive", "Democratic Detonation"]),
-    Primary("Jar-5 Dominator", "Explosive", False, ["Steeled Veterans"]),
 
     Primary("Punisher Plasma", "Energy-Based", False,["Cutting Edge"]),
     Primary("Blitzer", "Energy-Based", False,["Cutting Edge"]),
@@ -32,5 +31,6 @@ primaries = [
     Primary("Scorcher", "Energy-Based", False,["none"]),
     Primary("Purifier", "Energy-Based", False,["Polar Patriots"]),
 
+    Primary("Jar-5 Dominator", "Special", False, ["Steeled Veterans"]),
     Primary("Torcher", "Special", False,["anti-tank", "Freedoms Flame"]),
 ]
