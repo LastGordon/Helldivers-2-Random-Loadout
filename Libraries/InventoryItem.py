@@ -40,8 +40,8 @@ class Grenade(InventoryItem):
     
 
 class Armor(InventoryItem):
-    def __init__(self, name, description):
-        super().__init__(name, "Armor", ["none"])
+    def __init__(self, name, description, tags):
+        super().__init__(name, "Armor", tags)
         self.description = description
 
     def __repr__(self):
@@ -49,8 +49,8 @@ class Armor(InventoryItem):
     
     
 class Booster(InventoryItem):
-    def __init__(self, name, description):
-        super().__init__(name, "Booster", ["none"])
+    def __init__(self, name, description, tags):
+        super().__init__(name, "Booster", tags)
         self.description = description
 
     def __repr__(self):

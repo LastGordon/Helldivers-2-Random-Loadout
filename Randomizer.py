@@ -15,12 +15,81 @@ def randomize_items(
         stratagem_var, one_support_var, g_support_var, one_backpack_var, g_backpack_var, 
         g_sentry_var, g_tank_var, g_explosive_var, one_vehicle_var, g_vehicle_var,
         primary_filter_states, secondary_filter_states, grenade_filter_states, armor_filter_states,
-        booster_filter_states, sentry_filter_states, vehicle_filter_states
+        booster_filter_states, sentry_filter_states, vehicle_filter_states,
+        warbond_states, # superstore_states
         ):
     loadout = {}
     fulfilled_tags = []
     stratagem_choices = []
     selected_stratagems = set() # Set to prevent duplicates
+
+    primary_pool = primaries[:]  # Make a copy of the original primaries
+    secondary_pool = secondaries [:]
+    grenade_pool = grenades [:]
+    armor_pool = armors [:]
+    booster_pool = boosters [:]
+
+    stratagems_pools = {
+            'eagles': eagles[:],  # Use slicing to copy the list
+            'orbitals': orbitals[:],
+            'sentries': sentries[:],
+            'supports': supports[:],
+            'vehicles': vehicles[:]
+        }
+
+    # Function to remove items based on warbond states
+    def remove_items_by_warbonds(item_pool):
+        # First, remove all items with warbond tags
+        item_pool[:] = [item for item in item_pool if not any(warbond in item.tags for warbond in warbond_states.keys())]
+
+    # Remove from primary, secondary, grenade, armor, booster, and stratagem pools
+    for pool in [primary_pool, secondary_pool, grenade_pool, armor_pool, booster_pool]:
+        remove_items_by_warbonds(pool)
+
+    # Remove from stratagem pools
+    for key in stratagems_pools:
+        remove_items_by_warbonds(stratagems_pools[key])
+
+    # # Function to remove superstore items
+    # def remove_superstore_items(item_pool):
+    #     item_pool[:] = [item for item in item_pool if "Superstore" not in item.tags]  # Remove superstore-related items
+
+    # # Remove superstore items from armor pool
+    # remove_superstore_items(armor_pool)
+
+    # Function to re-add items based on warbond states
+    def re_add_items_by_warbonds(item_pool, original_pool):
+        for warbond_name, warbond_var in warbond_states.items():
+            if warbond_var.get():  # If the warbond is true
+                for item in original_pool:  # Check against the original items
+                    if warbond_name in item.tags:
+                        item_pool.append(item)
+
+    # Re-add items for each pool based on warbond states
+    re_add_items_by_warbonds(primary_pool, primaries)  # Assuming `primaries` contains original items for the corresponding pool
+    re_add_items_by_warbonds(secondary_pool, secondaries)
+    re_add_items_by_warbonds(grenade_pool, grenades)
+    re_add_items_by_warbonds(armor_pool, armors)
+    re_add_items_by_warbonds(booster_pool, boosters)
+
+    re_add_items_by_warbonds(stratagems_pools['eagles'], eagles)
+    re_add_items_by_warbonds(stratagems_pools['orbitals'], orbitals)
+    re_add_items_by_warbonds(stratagems_pools['sentries'], sentries)
+    re_add_items_by_warbonds(stratagems_pools['supports'], supports)
+    re_add_items_by_warbonds(stratagems_pools['vehicles'], vehicles)
+
+    # # Function to re-add superstore items
+    # def re_add_superstore_items(item_pool):
+    #     for item in superstore_states.items():
+    #         if item in item_pool:  # Ensure you are checking if the item object itself is present
+    #             continue  # If it's already in the pool, skip
+    #         if item.name in superstore_states and superstore_states[item.name] and item not in item_pool:
+    #             item_pool.append(item)
+
+    # print("Superstore States:", superstore_states)
+
+    # # Re-add superstore items to armor pool
+    # re_add_superstore_items(armor_pool)
 
     def filter_pool(item_pool, filter_states):
         filtered_items = []
@@ -77,7 +146,6 @@ def randomize_items(
 
     # Check each checkbox and randomize an item if the checkbox is active
     if primary_var:
-        primary_pool = primaries[:]  # Make a copy of the original primaries
         if primary_filter_states:
             filtered_primaries = filter_pool(primary_pool, primary_filter_states)  # Filter based on popup selection
             if filtered_primaries:  # Ensure there are items left after filtering
@@ -94,7 +162,6 @@ def randomize_items(
             fulfilled_tags.extend(primary_choice.tags)  # Track tags for later use
 
     if secondary_var:
-        secondary_pool = secondaries [:]
         if secondary_filter_states:
             filtered_secondaries = filter_pool(secondary_pool, secondary_filter_states)
             if filtered_secondaries:
@@ -109,7 +176,6 @@ def randomize_items(
             fulfilled_tags.extend(secondary_choice.tags)
 
     if grenade_var:
-        grenade_pool = grenades [:]
         if grenade_filter_states:
             filtered_grenades = filter_pool(grenade_pool, grenade_filter_states)
             if filtered_grenades:
@@ -124,7 +190,6 @@ def randomize_items(
             fulfilled_tags.extend(grenade_choice.tags)
 
     if armor_var:
-        armor_pool = armors [:]
         if armor_filter_states:
             filtered_armors = filter_pool(armor_pool, armor_filter_states)
             if filtered_armors:
@@ -139,7 +204,6 @@ def randomize_items(
             fulfilled_tags.extend(armor_choice.tags)
 
     if booster_var:
-        booster_pool = boosters [:]
         if booster_filter_states:
             filtered_boosters = filter_pool(booster_pool, booster_filter_states)
             if filtered_boosters:
@@ -161,15 +225,6 @@ def randomize_items(
 
     # Stratagem logic: Select 4 stratagems
     if stratagem_var:
-        # Make a fresh copy of the stratagem pools at the start of the function call
-        stratagems_pools = {
-            'eagles': eagles[:],  # Use slicing to copy the list
-            'orbitals': orbitals[:],
-            'sentries': sentries[:],
-            'supports': supports[:],
-            'vehicles': vehicles[:]
-        }
-
         # Apply filters immediately to the pools
         if sentry_filter_states:
             stratagems_pools['sentries'] = filter_pool(stratagems_pools['sentries'], sentry_filter_states)

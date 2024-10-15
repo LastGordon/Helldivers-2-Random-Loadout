@@ -13,7 +13,7 @@ supports = [
     Support("Laser Cannon", ["support weapon"], "Libraries/Images/Support/HD2-LC.png"),
     Support("Arc Thrower", ["support weapon", "anti-tank"], "Libraries/Images/Support/HD2-AT.png"),
     Support("Quasar Cannon", ["support weapon", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-QC.png"),
-    # Support("Sterilizer", ["support weapon"], "Libraries/Images/Blank/HD2-Blank-Weapon.png"), # no image
+    Support("Sterilizer", ["support weapon", "Chemical Agents"], "Libraries/Images/Support/HD2-ST.png"), # placeholder image
 
     Support("Recoilless Rifle", ["support weapon", "backpack", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-RR.png"),
     Support("Autocannon", ["support weapon", "backpack", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-AC.png"),
@@ -24,7 +24,7 @@ supports = [
     Support("Supply Pack", ["backpack"], "Libraries/Images/Support/HD2-SP.png"),
     Support("Guard Dog", ["backpack"], "Libraries/Images/Support/HD2-GD.png"),
     Support("Guard Dog Rover", ["backpack"], "Libraries/Images/Support/HD2-GDR.png"),
-    # Support("Guard Dog Dog Breath", ["backpack"], "Libraries/Images/Blank/HD2-Blank-Packs.png"), # no image
+    Support("Guard Dog Dog Breath", ["backpack", "Chemical Agents"], "Libraries/Images/Support/HD2-GDDB.png"), # Placeholder image
     Support("Ballistic Shield Backpack", ["backpack"], "Libraries/Images/Support/HD2-BS.png"),
     Support("Shield Generator Pack", ["backpack"], "Libraries/Images/Support/HD2-SGP.png"),
 ]

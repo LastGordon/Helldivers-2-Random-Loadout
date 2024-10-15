@@ -1,4 +1,6 @@
 import customtkinter as ctk
+import json
+import os
 from Libraries.Images.ImageLoader import ImageLoader
 from Randomizer import randomize_items
 from PIL import Image
@@ -9,6 +11,8 @@ from FilterPopups import ArmorFilterPopup
 from FilterPopups import BoosterFilterPopup
 from FilterPopups import SentryFilterPopup
 from FilterPopups import VehicleFilterPopup
+# from FilterPopups import SuperstoreFilterPopup
+
 
 
 
@@ -21,7 +25,7 @@ class LoadoutRandomizerApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Helldivers 2 Loadout Randomizer")
-        self.geometry("770x650")
+        self.geometry("1000x650")
 
         # Initialize ImageLoader
         self.image_loader = ImageLoader("Libraries/Images")
@@ -47,6 +51,8 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.sentry_filter_states = {}
         self.vehicle_filter_states = {}
 
+        # self.superstore_states = {}
+
         # Initialize checkbox variables
         self.primary_var = ctk.BooleanVar(value=False)
         self.secondary_var = ctk.BooleanVar(value=False)
@@ -66,8 +72,34 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.one_vehicle_var = ctk.BooleanVar(value=False)
         self.g_vehicle_var = ctk.BooleanVar(value=False)
 
-        # Configure Grid Layout: 2 rows, 1 columns
-        self.grid_columnconfigure((0), weight=1)
+        self.steeled_veterans_var = ctk.BooleanVar(value=False)
+        self.cutting_edge_var = ctk.BooleanVar(value=False)
+        self.democratic_detonation_var = ctk.BooleanVar(value=False)
+        self.polar_patriots_var = ctk.BooleanVar(value=False)
+        self.viper_commandos_var = ctk.BooleanVar(value=False)
+        self.freedoms_flame_var = ctk.BooleanVar(value=False)
+        self.chemical_agents_var = ctk.BooleanVar(value=False)
+
+        self.warbond_states = {
+            "Steeled Veterans": self.steeled_veterans_var,
+            "Cutting Edge": self.cutting_edge_var,
+            "Democratic Detonation": self.democratic_detonation_var,
+            "Polar Patriots": self.polar_patriots_var,
+            "Viper Commandos": self.viper_commandos_var,
+            "Freedoms Flame": self.freedoms_flame_var,
+            "Chemical Agents": self.chemical_agents_var
+        }
+
+        # Load saved warbond states
+        self.load_warbonds()
+        # self.superstore_popup = SuperstoreFilterPopup(self, self.superstore_states)
+        # self.superstore_popup.load_superstore()  # Load states without displaying the popup
+
+        # # Withdraw the popup to keep it hidden initially
+        # self.superstore_popup.withdraw()
+
+        # Configure Grid Layout: 2 rows, 2 columns
+        self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure((0), weight=0)
         self.grid_rowconfigure((1), weight=0)
 
@@ -215,6 +247,31 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.output_stratagem4_output = ctk.CTkLabel(self.output_frame, text="Stratagem Selection", font=ctk.CTkFont(size=22))
         self.output_stratagem4_output.grid(row=8, column=3, sticky="w", padx=10, rowspan=2)
 
+        # Right Side Section: Warbonds
+        self.warbond_states_frame = ctk.CTkFrame(self)
+        self.warbond_states_frame.grid(row=0, column=2, rowspan=2, sticky="ns", padx=10, pady=10)  # Span whole height of window
+        
+        self.warbond_states_label = ctk.CTkLabel(self.warbond_states_frame, text="Warbonds Owned", font=ctk.CTkFont(size=16, weight="bold"))
+        self.warbond_states_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
+
+        self.steeled_veterans_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Steeled Veterans", variable=self.steeled_veterans_var, command= self.save_warbonds)
+        self.steeled_veterans_check.grid(row=1, column=0, sticky="w", padx=10, pady=(0,5))
+        self.cutting_edge_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Cutting Edge", variable=self.cutting_edge_var, command= self.save_warbonds)
+        self.cutting_edge_check.grid(row=2, column=0, sticky="w", padx=10, pady=(0,5))
+        self.democratic_detonation_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Democratic Detonation", variable=self.democratic_detonation_var, command= self.save_warbonds)
+        self.democratic_detonation_check.grid(row=3, column=0, sticky="w", padx=10, pady=(0,5))
+        self.polar_patriots_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Polar Patriots", variable=self.polar_patriots_var, command= self.save_warbonds)
+        self.polar_patriots_check.grid(row=4, column=0, sticky="w", padx=10, pady=(0,5))
+        self.viper_commandos_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Viper Commandos", variable=self.viper_commandos_var, command= self.save_warbonds)
+        self.viper_commandos_check.grid(row=5, column=0, sticky="w", padx=10, pady=(0,5))
+        self.freedoms_flame_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Freedoms Flame", variable=self.freedoms_flame_var, command= self.save_warbonds)
+        self.freedoms_flame_check.grid(row=6, column=0, sticky="w", padx=10, pady=(0,5))
+        self.chemical_agents_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Chemical Agents", variable=self.chemical_agents_var, command= self.save_warbonds)
+        self.chemical_agents_check.grid(row=7, column=0, sticky="w", padx=10, pady=(0,5))
+
+        # self.superstore_button = ctk.CTkButton(self.warbond_states_frame, text="Superstore Purchases", command=self.open_superstore_filter_popup)
+        # self.superstore_button.grid(column=0, sticky="S")
+
 
     # Enable or disable gear options based on master checkbox state
     def toggle_gear_options(self):
@@ -318,6 +375,13 @@ class LoadoutRandomizerApp(ctk.CTk):
     def open_vehicle_filter_popup(self):
         VehicleFilterPopup(self, self.vehicle_filter_states)
 
+    # def open_superstore_filter_popup(self):
+    #     if self.superstore_popup is None or not self.superstore_popup.winfo_exists():
+    #         # Create a new instance if it doesn't exist or has been destroyed
+    #         self.superstore_popup = SuperstoreFilterPopup(self, self.superstore_states)
+        
+    #     self.superstore_popup.deiconify()  # Show the popup
+
         # method for generating loadout
     def find_loadout(self):
         # Call the randomizer function, passing the necessary variables
@@ -343,7 +407,9 @@ class LoadoutRandomizerApp(ctk.CTk):
             armor_filter_states=self.armor_filter_states,
             booster_filter_states=self.booster_filter_states,
             sentry_filter_states=self.sentry_filter_states,
-            vehicle_filter_states=self.vehicle_filter_states
+            vehicle_filter_states=self.vehicle_filter_states,
+            warbond_states=self.warbond_states,
+            # superstore_states=self.superstore_states
             )
 
         # Update output labels with loadout data using class attributes
@@ -435,6 +501,25 @@ class LoadoutRandomizerApp(ctk.CTk):
         for widget in subclass_frame.winfo_children():
             if isinstance(widget, ctk.CTkCheckBox):
                 widget.select() if subclass_var.get() else widget.deselect()
+
+    def save_warbonds(self):
+        data = {name: var.get() for name, var in self.warbond_states.items()}
+        
+        with open("Warbonds.json", "w") as file:
+            json.dump(data, file, indent=4)
+
+    def load_warbonds(self):
+        if os.path.exists("Warbonds.json"):
+            with open("Warbonds.json", "r") as file:
+                data = json.load(file)
+
+            for name, var in self.warbond_states.items():
+                var.set(data.get(name, False))
+
+    # def load_superstore(self):
+    #     # Create an instance of SuperstoreFilterPopup to call load_superstore_data
+    #     popup = SuperstoreFilterPopup(self, self.superstore_states)
+    #     popup.load_superstore()
 
 # Run the application
 if __name__ == "__main__":

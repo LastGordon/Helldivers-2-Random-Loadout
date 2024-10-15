@@ -1,4 +1,6 @@
 import customtkinter as ctk
+import json
+import os
 from Libraries.Primaries import primaries
 from Libraries.Secondaries import secondaries
 from Libraries.Grenades import grenades
@@ -6,6 +8,7 @@ from Libraries.Armors import armors
 from Libraries.Boosters import boosters
 from Libraries.Stratagems.Sentries import sentries
 from Libraries.Stratagems.Vehicles import vehicles
+
 
 class PrimaryFilterPopup(ctk.CTkToplevel):
     def __init__(self, master, primary_filter_states, *args, **kwargs):
@@ -207,7 +210,7 @@ class GrenadeFilterPopup(ctk.CTkToplevel):
         super().__init__(master, *args, **kwargs)
         
         self.title("Grenade Filter")
-        self.geometry("210x280")
+        self.geometry("210x320")
         self.attributes('-topmost', True)
         
         self.grenade_filter_vars = {}  # Store variables for each checkbox
@@ -558,7 +561,7 @@ class VehicleFilterPopup(ctk.CTkToplevel):
         super().__init__(master, *args, **kwargs)
         
         self.title("Vehicle Filter")
-        self.geometry("650x500")
+        self.geometry("200x300")
         self.attributes('-topmost', True)
         
         self.vehicle_filter_vars = {}  # Store variables for each checkbox
@@ -648,3 +651,87 @@ class VehicleFilterPopup(ctk.CTkToplevel):
 
     def get_selected_vehicle_weapons(self):
         return [name for name, var in self.vehicle_filter_vars.items() if var.get()]
+    
+class SuperstoreFilterPopup(ctk.CTkToplevel):
+    def __init__(self, master, superstore_states, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+
+        self.title("Superstore Filter")
+        self.geometry("225x380")
+        self.attributes('-topmost', True)
+
+        self.superstore_filter_vars = {}  # Store variables for each checkbox
+        self.superstore_subclass_vars = {}  # Store variables for each subclass checkbox
+        self.superstore_subclass_frames = {}  # Dictionary to hold widgets for each subclass
+
+        # Store a reference to the central state dictionary passed from the main app
+        self.superstore_checkbox_states = superstore_states
+
+        # Create a frame to hold all subclass checkboxes
+        grid_frame = ctk.CTkFrame(self)
+        grid_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Create sections for each subclass, filtering for "Superstore" tag in warbonds
+        superstore_items = sorted([item for item in armors if "Superstore" in item.tags], key=lambda x: x.name)
+
+        for item in superstore_items:
+            # Create a frame for each item in the superstore
+            superstore_item_frame = ctk.CTkFrame(grid_frame)
+            superstore_item_frame.grid(padx=10, pady=5, sticky="nw")
+
+            superstore_item_var = ctk.BooleanVar()
+            superstore_item_checkbox = ctk.CTkCheckBox(
+                superstore_item_frame, text=item.name, variable=superstore_item_var
+            )
+            superstore_item_checkbox.pack(anchor="w", padx=20)
+
+            self.superstore_filter_vars[item.name] = superstore_item_var
+
+            # Initialize checkbox state from the central dictionary
+            superstore_item_var.set(self.superstore_checkbox_states.get(item.name, False))
+
+            # Update state on checkbox change
+            superstore_item_var.trace_add("write", lambda *args, name=item.name, var=superstore_item_var: self.update_superstore_checkbox_state(name, var))
+
+        # Add Confirm button
+        confirm_superstore_button = ctk.CTkButton(self, text="Confirm", command=self.confirm_superstore_selection)
+        confirm_superstore_button.pack(pady=10)
+
+    # Update the state of an individual checkbox and store it in the central dictionary.
+    def update_superstore_checkbox_state(self, item_name, var):
+        self.superstore_checkbox_states[item_name] = var.get()  # Save the state of the individual checkbox
+        if var.get():
+            self.superstore_checkbox_states[item_name] = self.superstore_checkbox_states[item_name]  # Maintain a reference to the item object
+        else:
+            if item_name in self.superstore_checkbox_states:
+                del self.superstore_checkbox_states[item_name]  # Remove the item from superstore_states if unchecked
+
+    # Save the state of all checkboxes when the Confirm button is pressed.
+    def confirm_superstore_selection(self):
+        for name, var in self.superstore_filter_vars.items():
+            self.superstore_checkbox_states[name] = var.get()  # Update the central state dictionary
+
+        # Save the states to Warbonds.json
+        self.save_superstore()
+        print("Checkbox states saved:", self.superstore_checkbox_states)  # Debugging or additional logic
+
+        # Close the popup window
+        self.withdraw()
+    
+
+    def save_superstore(self):
+        data = {name: var.get() for name, var in self.superstore_filter_vars.items()}
+        
+        with open("Superstore.json", "w") as file:
+            json.dump(data, file, indent=4)
+
+    def load_superstore(self):
+        if os.path.exists("Superstore.json"):
+            with open("Superstore.json", "r") as file:
+                data = json.load(file)
+
+            for name, var in self.superstore_filter_vars.items():
+                var.set(data.get(name, False))
+
+    def get_selected_superstore_items(self):
+        return [name for name, var in self.superstore_filter_vars.items() if var.get()]

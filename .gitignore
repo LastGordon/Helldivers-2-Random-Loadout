@@ -21,3 +21,6 @@ sandbox.py
 *.spec
 build/
 dist/
+
+# Ignore automatically building json files
+*.json
