@@ -11,4 +11,8 @@ secondaries = [
     Secondary("Dagger", "Special", ["Cutting Edge"]),
     Secondary("Crisper", "Special", ["Freedoms Flame"]),
     Secondary("Stim Pistol", "Special", ["Chemical Agents"]),
+    Secondary("Loyalist", "Special", ["Truth Enforcers"]),
+
+    Secondary("Stun Lance", "Melee", ["Urban Legends"]),
+    Secondary("Stun Baton", "Melee", ["Superstore"]),
 ]

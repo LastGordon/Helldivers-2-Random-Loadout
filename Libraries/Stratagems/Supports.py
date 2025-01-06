@@ -19,6 +19,7 @@ supports = [
     Support("Autocannon", ["support weapon", "backpack", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-AC.png"),
     Support("Airburst Rocket Launcher", ["support weapon", "backpack"], "Libraries/Images/Support/HD2-ARL.png"),
     Support("Spear", ["support weapon", "backpack", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-SPE.png"),
+    Support("W.A.S.P. Launcher", ["support weapon", "backpack", "explosive", "anti-tank"], "Libraries/Images/Support/HD2-WL.png"), # placeholder image
 
     Support("Jump Pack", ["backpack"], "Libraries/Images/Support/HD2-JP.png"),
     Support("Supply Pack", ["backpack"], "Libraries/Images/Support/HD2-SP.png"),
@@ -27,4 +28,5 @@ supports = [
     Support("Guard Dog Dog Breath", ["backpack", "Chemical Agents"], "Libraries/Images/Support/HD2-GDDB.png"), # Placeholder image
     Support("Ballistic Shield Backpack", ["backpack"], "Libraries/Images/Support/HD2-BS.png"),
     Support("Shield Generator Pack", ["backpack"], "Libraries/Images/Support/HD2-SGP.png"),
+    Support("Directional Shield", ["backpack", "Urban Legends"], "Libraries/Images/Support/HD2-DS.png"), # Placeholder image
 ]

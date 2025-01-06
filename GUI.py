@@ -72,6 +72,7 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.one_vehicle_var = ctk.BooleanVar(value=False)
         self.g_vehicle_var = ctk.BooleanVar(value=False)
 
+        self.deluxe_var = ctk.BooleanVar(value=False)
         self.steeled_veterans_var = ctk.BooleanVar(value=False)
         self.cutting_edge_var = ctk.BooleanVar(value=False)
         self.democratic_detonation_var = ctk.BooleanVar(value=False)
@@ -79,15 +80,20 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.viper_commandos_var = ctk.BooleanVar(value=False)
         self.freedoms_flame_var = ctk.BooleanVar(value=False)
         self.chemical_agents_var = ctk.BooleanVar(value=False)
+        self.truth_enforcers_var = ctk.BooleanVar(value=False)
+        self.urban_legends_var = ctk.BooleanVar(value=False)
 
         self.warbond_states = {
+            "Deluxe" : self.deluxe_var,
             "Steeled Veterans": self.steeled_veterans_var,
             "Cutting Edge": self.cutting_edge_var,
             "Democratic Detonation": self.democratic_detonation_var,
             "Polar Patriots": self.polar_patriots_var,
             "Viper Commandos": self.viper_commandos_var,
             "Freedoms Flame": self.freedoms_flame_var,
-            "Chemical Agents": self.chemical_agents_var
+            "Chemical Agents": self.chemical_agents_var,
+            "Truth Enforcers": self.truth_enforcers_var,
+            "Urban Legends": self.urban_legends_var
         }
 
         # Load saved warbond states
@@ -254,20 +260,26 @@ class LoadoutRandomizerApp(ctk.CTk):
         self.warbond_states_label = ctk.CTkLabel(self.warbond_states_frame, text="Warbonds Owned", font=ctk.CTkFont(size=16, weight="bold"))
         self.warbond_states_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
+        self.deluxe_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Super Citizen Edition", variable=self.deluxe_var, command= self.save_warbonds)
+        self.deluxe_check.grid(row=1, column=0, sticky="w", padx=10, pady=(0,5))
         self.steeled_veterans_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Steeled Veterans", variable=self.steeled_veterans_var, command= self.save_warbonds)
-        self.steeled_veterans_check.grid(row=1, column=0, sticky="w", padx=10, pady=(0,5))
+        self.steeled_veterans_check.grid(row=2, column=0, sticky="w", padx=10, pady=(0,5))
         self.cutting_edge_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Cutting Edge", variable=self.cutting_edge_var, command= self.save_warbonds)
-        self.cutting_edge_check.grid(row=2, column=0, sticky="w", padx=10, pady=(0,5))
+        self.cutting_edge_check.grid(row=3, column=0, sticky="w", padx=10, pady=(0,5))
         self.democratic_detonation_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Democratic Detonation", variable=self.democratic_detonation_var, command= self.save_warbonds)
-        self.democratic_detonation_check.grid(row=3, column=0, sticky="w", padx=10, pady=(0,5))
+        self.democratic_detonation_check.grid(row=4, column=0, sticky="w", padx=10, pady=(0,5))
         self.polar_patriots_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Polar Patriots", variable=self.polar_patriots_var, command= self.save_warbonds)
-        self.polar_patriots_check.grid(row=4, column=0, sticky="w", padx=10, pady=(0,5))
+        self.polar_patriots_check.grid(row=5, column=0, sticky="w", padx=10, pady=(0,5))
         self.viper_commandos_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Viper Commandos", variable=self.viper_commandos_var, command= self.save_warbonds)
-        self.viper_commandos_check.grid(row=5, column=0, sticky="w", padx=10, pady=(0,5))
+        self.viper_commandos_check.grid(row=6, column=0, sticky="w", padx=10, pady=(0,5))
         self.freedoms_flame_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Freedoms Flame", variable=self.freedoms_flame_var, command= self.save_warbonds)
-        self.freedoms_flame_check.grid(row=6, column=0, sticky="w", padx=10, pady=(0,5))
+        self.freedoms_flame_check.grid(row=7, column=0, sticky="w", padx=10, pady=(0,5))
         self.chemical_agents_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Chemical Agents", variable=self.chemical_agents_var, command= self.save_warbonds)
-        self.chemical_agents_check.grid(row=7, column=0, sticky="w", padx=10, pady=(0,5))
+        self.chemical_agents_check.grid(row=8, column=0, sticky="w", padx=10, pady=(0,5))
+        self.truth_enforcers_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Truth Enforcers", variable=self.truth_enforcers_var, command= self.save_warbonds)
+        self.truth_enforcers_check.grid(row=9, column=0, sticky="w", padx=10, pady=(0,5))
+        self.urban_legends_check = ctk.CTkCheckBox(self.warbond_states_frame, text="Urban Legends", variable=self.urban_legends_var, command= self.save_warbonds)
+        self.urban_legends_check.grid(row=10, column=0, sticky="w", padx=10, pady=(0,5))
 
         # self.superstore_button = ctk.CTkButton(self.warbond_states_frame, text="Superstore Purchases", command=self.open_superstore_filter_popup)
         # self.superstore_button.grid(column=0, sticky="S")

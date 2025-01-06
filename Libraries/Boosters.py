@@ -12,5 +12,6 @@ boosters = [
     Booster("Expert Extraction Pilot", "Lowers the time for the shuttle to reach the beacon.", ["Democratic Detonation"]),
     Booster("Motivational Shocks", "Helldivers recover faster from attacks such as acid.", ["Polar Patriots"]),
     Booster("Experimental Infusion", "Stims also increase move speed and damage reduction.", ["Viper Commandos"]),
-    Booster("Firebomb Hellpods", "Lines Hellpods with incendiaries that detonate upon impact.", ["Freedoms Flame"])
+    Booster("Firebomb Hellpods", "Lines Hellpods with incendiaries that detonate upon impact.", ["Freedoms Flame"]),
+    Booster("Armed Resupply Pods", "Adds a modified Liberator to all resupply pods.", ["Urban Legends"]),
 ]

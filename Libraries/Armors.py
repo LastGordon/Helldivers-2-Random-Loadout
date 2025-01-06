@@ -18,7 +18,7 @@ Increases stim effect duration by 2s.""", ["none"]),
         """Provides 95% resistance to arc damage.\n""", ["Cutting Edge"]),
     Armor(
         "Peak Physique",
-        """Increases melee damage by 50%.
+        """Increases melee damage by 100%.
 Improves weapons handling.""", ["Superstore", "Viper Commandos"]),
     Armor(
         "Fortified",
@@ -41,4 +41,14 @@ Provides +50% limb health.""", ["Superstore", "Steeled Veterans", "Polar Patriot
         Armor(
         "Advanced Filtration",
         """Provides 80% resistance to gas damage and effects.\n""", ["Superstore", "Chemical Agents"]),
+        Armor(
+        "Unflinching",
+        """Helps prevent Helldivers from flinching when hit.\n""", ["Superstore", "Truth Enforcers"]),
+        Armor(
+        "Acclimated",
+        """50% resistance to fire, gas, acid, and arc damage.\n""", ["none"]),
+        Armor(
+        "Seige Ready",
+        """Increases reload speed of primary weapons by 30%.
+Increases ammo capacity of primary weapons by 20%""", ["Urban Legends"]),
 ]
